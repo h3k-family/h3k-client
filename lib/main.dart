@@ -88,6 +88,14 @@ class _MyHomePageState extends State<MyHomePage> {
                       (Child child) => ListTile(
                         title: Text(child.url),
                         subtitle: Text("${child.updatedAt}"),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DetailScreen(child: child),
+                            ),
+                          );
+                        },
                       ),
                     )
                     .toList(),
@@ -97,6 +105,28 @@ class _MyHomePageState extends State<MyHomePage> {
             }
           },
         ),
+      ),
+    );
+  }
+}
+
+class DetailScreen extends StatelessWidget {
+  // Declare a field that holds the Child
+  final Child child;
+
+  // In the constructor, require a Todo.
+  DetailScreen({Key? key, required this.child}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // Use the Todo to create the UI.
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("${child.id}"),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Text(child.url),
       ),
     );
   }
