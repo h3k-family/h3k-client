@@ -81,7 +81,17 @@ class _MyHomePageState extends State<MyHomePage> {
           future: fetchChildren(),
           builder: (BuildContext context, AsyncSnapshot<List<Child>> snapshot) {
             if (snapshot.hasData) {
-              return Text("Something is good");
+              List<Child> children = snapshot.data!;
+              return ListView(
+                children: children
+                    .map(
+                      (Child child) => ListTile(
+                        title: Text(child.url),
+                        subtitle: Text("${child.updatedAt}"),
+                      ),
+                    )
+                    .toList(),
+              );
             } else {
               return Center(child: CircularProgressIndicator());
             }
