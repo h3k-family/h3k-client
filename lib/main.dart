@@ -155,7 +155,26 @@ class DetailScreen extends StatelessWidget {
   // Declare a field that holds the Child
   final Child child;
 
-  // In the constructor, require a Todo.
+  Future<List<SensorData>> fetchSensorData() async {
+    final response = await http.get(Uri.parse("${child.url}/sensors/data/"));
+
+    if (response.statusCode == 200) {
+      List<dynamic> body = jsonDecode(response.body);
+      List<SensorData> sensors = body
+          .map(
+            (dynamic item) => SensorData.fromJson(item),
+          )
+          .toList();
+
+      return sensors;
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
+  }
+
+  // In the constructor, require a Child
   DetailScreen({Key? key, required this.child}) : super(key: key);
 
   @override
@@ -167,7 +186,44 @@ class DetailScreen extends StatelessWidget {
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
-        child: Text(child.url),
+        child: FutureBuilder(
+          future: fetchSensorData(),
+          builder:
+              (BuildContext context, AsyncSnapshot<List<SensorData>> snapshot) {
+            if (snapshot.hasData) {
+              List<SensorData> children = snapshot.data!;
+              return ListView(
+                children: children
+                    .map(
+                      (SensorData child) => ListTile(
+                        title: Row(
+                          children: <Widget>[
+                            Text("${child.sensorName}"),
+                            Expanded(child: Container()),
+                            Text(
+                              "location(${child.longitude}, ${child.latitude})",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w300,
+                              ),
+                            ),
+                          ],
+                        ),
+                        subtitle: Row(
+                          children: <Widget>[
+                            Text("${child.value} ${child.unitsShort}"),
+                            Expanded(child: Container()),
+                            Text("${child.username} - ${child.updatedAt}"),
+                          ],
+                        ),
+                      ),
+                    )
+                    .toList(),
+              );
+            } else {
+              return Center(child: CircularProgressIndicator());
+            }
+          },
+        ),
       ),
     );
   }
