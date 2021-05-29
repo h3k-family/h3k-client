@@ -110,6 +110,47 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
+class SensorData {
+  final int id;
+  final int sensorId;
+  final double value;
+  final String updatedAt;
+  final String sensorName;
+  final String username;
+  final String unitsShort;
+  final String unitsLong;
+  final double latitude;
+  final double longitude;
+
+  SensorData({
+    required this.id,
+    required this.sensorId,
+    required this.value,
+    required this.updatedAt,
+    required this.sensorName,
+    required this.username,
+    required this.unitsShort,
+    required this.unitsLong,
+    required this.latitude,
+    required this.longitude,
+  });
+
+  factory SensorData.fromJson(Map<String, dynamic> json) {
+    return SensorData(
+      id: json["id"],
+      sensorId: json["sensor_id"],
+      value: json["value"],
+      updatedAt: json["updated_at"],
+      sensorName: json["sensor_name"],
+      username: json["username"],
+      unitsShort: json["units_short"],
+      unitsLong: json["units_long"],
+      latitude: json["latitude"],
+      longitude: json["longitude"],
+    );
+  }
+}
+
 class DetailScreen extends StatelessWidget {
   // Declare a field that holds the Child
   final Child child;
